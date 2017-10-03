@@ -3,14 +3,13 @@ package com.univ.it.table;
 import com.univ.it.types.Attribute;
 
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 public class Row {
     private ArrayList<Attribute> values;
 
     public Row() {
-        values = new ArrayList<>(
-
-        );
+        values = new ArrayList<>();
     }
 
     public Row(int n) {
@@ -21,16 +20,23 @@ public class Row {
         values.set(ind, newValue);
     }
 
-    public String getAt(int ind) {
-        return values.get(ind).toString();
+    public void pushBack(Attribute a) {
+        values.add(a);
+    }
+
+    public int size() {
+        return values.size();
+    }
+
+    public Attribute getAt(int ind) {
+        return values.get(ind);
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        StringJoiner result = new StringJoiner("\t");
         for (Attribute attribute : values) {
-            result.append(attribute.toString());
-            result.append("\t");
+            result.add(attribute.toString());
         }
         return result.toString();
     }
