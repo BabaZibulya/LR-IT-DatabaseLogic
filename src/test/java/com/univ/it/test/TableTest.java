@@ -32,32 +32,14 @@ public class TableTest {
     }
 
     @Test
-    public void createTableTest() {
-        Table table = fillTable();
-        assertEquals(sizeOfTable, table.size());
-        for (int i = 0; i < table.size(); ++i) {
-            Row row = table.getRow(i);
-            assertEquals(charVal + "\t" + realVal + "\t" + charIntervalVal, row.toString());
-        }
-    }
-
-    @Test
-    public void writeTableTest() {
+    public void readAndWriteTableTest() throws Exception {
         Table table = fillTable();
         table.saveToFile("/home/bondarenko/");
-    }
-
-    @Test
-    public void readTableTest() {
-        try {
-            Table table = Table.readFromFile("/home/bondarenko/test");
-            assertEquals(sizeOfTable, table.size());
-            for (int i = 0; i < table.size(); ++i) {
-                Row row = table.getRow(i);
-                assertEquals(charVal + "\t" + realVal + "\t" + charIntervalVal, row.toString());
-            }
-        } catch (Exception e) {
-            System.out.println(e);
+        Table table2 = Table.readFromFile("/home/bondarenko/test");
+        assertEquals(sizeOfTable, table2.size());
+        for (int i = 0; i < table2.size(); ++i) {
+            Row row = table.getRow(i);
+            assertEquals(charVal + "\t" + realVal + "\t" + charIntervalVal, row.toString());
         }
     }
 }

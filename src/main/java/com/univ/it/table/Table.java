@@ -20,6 +20,10 @@ public class Table {
         columns = new ArrayList<>();
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void addNewRow(Row newRow) throws Exception {
         if (firstRow) {
             columns = deduceTypes(newRow);
@@ -57,12 +61,20 @@ public class Table {
         return rows.size();
     }
 
+    public int columnNumber() {
+        return columns.size();
+    }
+
     public Row getRow(int ind) {
         if (ind >= rows.size()) {
             throw new IndexOutOfBoundsException("Table has no such row");
         } else {
             return rows.get(ind);
         }
+    }
+
+    public Column getColumn(int ind) {
+        return columns.get(ind);
     }
 
     public void saveToFile(String pathToFile) throws FileNotFoundException {
@@ -77,6 +89,7 @@ public class Table {
             String rowString = row.toString();
             out.println(rowString);
         }
+        out.close();
     }
 
     public static Table readFromFile(String file) throws Exception {
@@ -101,16 +114,46 @@ public class Table {
                 if (columnNumber != row.length) {
                     throw new Exception("Invalid file");
                 }
-                result.rows.add(new Row());
+                Row newRow = new Row();
                 int i = 0;
                 for (String stringAttribute : row) {
                     Constructor attributeConstructor = result.columns.get(i).getAttributeConstructor();
                     Attribute attribute = (Attribute) attributeConstructor.newInstance(stringAttribute);
-                    result.rows.get(result.rows.size() - 1).replaceAt(i, attribute);
+                    newRow.pushBack(attribute);
                     ++i;
                 }
+                result.rows.add(newRow);
             }
         }
         return result;
+    }
+
+    public static Table differenceBetween(Table table1, Table table2) {
+        Table difference = new Table("Difference");
+        if (table1.columns.size() != table2.columns.size()) {
+            return difference;
+        }
+        for (int i = 0; i < table1.columns.size(); ++i) {
+            if (!table1.columns.get(i).equals(table2.columns.get(i))) {
+                return difference;
+            }
+        }
+        for (int firstTableRow = 0; firstTableRow < table1.size(); ++firstTableRow) {
+            boolean isInSecond = false;
+            for (int secondTableRow = 0; secondTableRow < table2.size(); ++secondTableRow) {
+                if (table1.rows.get(firstTableRow).equals(table2.rows.get(secondTableRow))) {
+                    isInSecond = true;
+                    break;
+                }
+            }
+            if (!isInSecond) {
+                try {
+                    difference.addNewRow(table1.getRow(firstTableRow));
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return difference;
     }
 }

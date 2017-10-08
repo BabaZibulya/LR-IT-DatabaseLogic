@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "com.univ.it.gui.MainWindow"
 
 repositories {
     mavenCentral()

@@ -32,6 +32,18 @@ public class Row {
         return values.get(ind);
     }
 
+    public boolean equals(Row other) {
+        if (other.size() != size()) {
+            return false;
+        }
+        for (int i = 0; i < size(); ++i) {
+            if (!values.get(i).toString().equals(other.getAt(i).toString())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         StringJoiner result = new StringJoiner("\t");
