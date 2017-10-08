@@ -1,5 +1,7 @@
 package com.univ.it.table;
 
+import com.univ.it.types.Attribute;
+
 import java.lang.reflect.Constructor;
 
 public class Column {
@@ -18,14 +20,18 @@ public class Column {
     }
 
     public Column(Class c) {
+        attributeType = c;
         String s = attributeType.getCanonicalName();
         name = s.substring(s.lastIndexOf(".") + 1);
-        attributeType = c;
         try {
             attributeConstructor = attributeType.getConstructor();
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public Attribute createAttribute(String attrString) throws Exception {
+        return (Attribute) attributeConstructor.newInstance(attrString);
     }
 
     public String getName() {

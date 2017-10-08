@@ -12,7 +12,7 @@ public class Table {
     private String name;
     private ArrayList<Row> rows;
     private ArrayList<Column> columns;
-    private boolean firstRow = true;
+    private boolean columnsInitialized = false;
 
     public Table(String name) {
         this.name = name;
@@ -20,20 +20,33 @@ public class Table {
         columns = new ArrayList<>();
     }
 
+    public Table(String name, ArrayList<Column> columns) {
+        this.name = name;
+        this.columns = columns;
+        columnsInitialized = true;
+        rows = new ArrayList<>();
+    }
+
     public String getName() {
         return name;
     }
 
     public void addNewRow(Row newRow) throws Exception {
-        if (firstRow) {
+        if (!columnsInitialized) {
             columns = deduceTypes(newRow);
-            firstRow = false;
+            columnsInitialized = true;
         } else {
             if (!checkTypes(newRow)) {
                 throw new Exception("Types are incompatible");
             }
         }
         rows.add(newRow);
+    }
+
+    public void replaceAt(int row, int col, String newValue) throws Exception {
+        Column column = columns.get(col);
+        Attribute newAttribute = column.createAttribute(newValue);
+        rows.get(row).replaceAt(col, newAttribute);
     }
 
     private ArrayList<Column> deduceTypes(Row row) {
@@ -125,6 +138,9 @@ public class Table {
                 result.rows.add(newRow);
             }
         }
+        result.columnsInitialized = true;
+        br.close();
+        fr.close();
         return result;
     }
 

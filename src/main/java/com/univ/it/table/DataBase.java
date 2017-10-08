@@ -24,21 +24,24 @@ public class DataBase {
     }
 
     public boolean dropTable(String tableName) {
-        return (null == tables.remove(tableName));
+        return (null != tables.remove(tableName));
     }
 
     public HashMap<String, Table> getTables() {
         return tables;
     }
 
-    public void writeFromFile(String pathToFile) throws FileNotFoundException {
+    public Table getTable(String tableName) {
+        return tables.get(tableName);
+    }
+
+    public void writeToFile(String pathToFile) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(pathToFile + File.separator + name + ".db");
 
-        StringJoiner columnNames = new StringJoiner("\t");
         for (String tableName : tables.keySet()) {
-            columnNames.add(tableName);
+            out.println(tableName);
         }
-        out.println(columnNames);
+        out.close();
         for (Table table : tables.values()) {
             table.saveToFile(pathToFile);
         }
@@ -57,6 +60,9 @@ public class DataBase {
         while ((sCurrentLine = br.readLine()) != null) {
             db.addTable(Table.readFromFile(dpPath + File.separator + sCurrentLine));
         }
+
+        br.close();
+        fr.close();
 
         return db;
     }
